@@ -1,82 +1,98 @@
-import { Column } from '@ant-design/plots';
 import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LabelList, ResponsiveContainer } from 'recharts';
 import { CardWrapper, Title } from '../../../Components';
 
 const DemoColumn = () => {
     const [data, setData] = useState([]);
-    const GraphThemeColors = ["#27AE60", "#F2C94C", "#BFC5D4"]
+
+    const GraphThemeColors = {
+        "Essential": "#27AE60",
+        "Non-Essential": "#F2C94C"
+    };
+
     useEffect(() => {
         // Dummy data for last week's expenses
         const dummyData = [
-            { day: 'Mon', value: 120, type: 'Essential' },
-            { day: 'Mon', value: 80, type: 'Non-Essential' },
-            { day: 'Tue', value: 150, type: 'Essential' },
-            { day: 'Tue', value: 50, type: 'Non-Essential' },
-            { day: 'Wed', value: 90, type: 'Essential' },
-            { day: 'Wed', value: 60, type: 'Non-Essential' },
-            { day: 'Thu', value: 110, type: 'Essential' },
-            { day: 'Thu', value: 70, type: 'Non-Essential' },
-            { day: 'Fri', value: 130, type: 'Essential' },
-            { day: 'Fri', value: 90, type: 'Non-Essential' },
-            { day: 'Sat', value: 140, type: 'Essential' },
-            { day: 'Sat', value: 60, type: 'Non-Essential' },
-            { day: 'Sun', value: 160, type: 'Essential' },
-            { day: 'Sun', value: 100, type: 'Non-Essential' },
+            { day: 'Mon', Essential: 120, NonEssential: 80 },
+            { day: 'Tue', Essential: 150, NonEssential: 50 },
+            { day: 'Wed', Essential: 90, NonEssential: 60 },
+            { day: 'Thu', Essential: 110, NonEssential: 70 },
+            { day: 'Fri', Essential: 130, NonEssential: 90 },
+            { day: 'Sat', Essential: 140, NonEssential: 60 },
+            { day: 'Sun', Essential: 160, NonEssential: 100 },
         ];
         setData(dummyData);
     }, []);
 
-    // Function to create annotations for the chart
-    const createAnnotations = (data) => {
-        const groupedData = {};
-        data.forEach(item => {
-            if (!groupedData[item.day]) {
-                groupedData[item.day] = 0;
-            }
-            groupedData[item.day] += item.value;
-        });
-
-        return Object.entries(groupedData).map(([day, totalValue]) => ({
-            type: 'text',
-            data: [day, totalValue],
-            style: {
-                textAlign: 'center',
-                fontSize: 14,
-                fill: 'rgba(0,0,0,0.85)',
-            },
-            xField: 'day',
-            yField: 'value',
-            style: {
-                text: `${totalValue}`,
-                textBaseline: 'bottom',
-                position: 'top',
-                textAlign: 'center',
-            },
-            tooltip: false,
-        }));
-    };
-
-    const annotations = createAnnotations(data);
-
-    const config = {
-        data,
-        xField: 'day',
-        yField: 'value',
-        stack: true,
-        colorField: 'type', // Use 'type' to differentiate colors
-        color: GraphThemeColors, // Apply the color array from your theme
-        label: {
-            text: 'value',
-            textBaseline: 'bottom',
-            position: 'inside',
-        },
-        annotations,
-    };
+    // Function to add up 'Essential' and 'Non-Essential' for each day
+    const dataWithTotal = data.map(item => ({
+        ...item,
+        total: item.Essential + item.NonEssential,
+    }));
 
     return (
         <CardWrapper>
             <Title title="Last Week" />
-            <Column {...config} />
+            <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                    data={dataWithTotal}
+                    margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                >
+                    <XAxis dataKey="day" />
+                    <YAxis />
+                    <Legend />
+                    <Bar
+                        dataKey="Essential"
+                        stackId="a"
+                        fill={GraphThemeColors["Essential"]}
+                    >
+                        <LabelList
+                            dataKey="Essential"
+                            position="insideTop"
+                            fontWeight={400}
+                            fill='black'
+                            fontSize={12}
+                        />
+                    </Bar>
+                    <Bar
+                        dataKey="NonEssential"
+                        stackId="a"
+                        fill={GraphThemeColors["Non-Essential"]}
+                        radius={[10, 10, 0, 0]}
+                    >
+                        <LabelList
+                            dataKey="NonEssential"
+                            position="insideTop"
+                            fontWeight={400}
+                            fill='black'
+                            fontSize={12}
+
+                        />
+                        {/* Display total on top of the bar */}
+                        <LabelList
+                            dataKey="total"
+                            position="top"
+                            content={({ x, y, value }) => (
+                                <text
+                                    x={x + 30}
+                                    y={y - 10}
+                                    fill="black"
+                                    textAnchor="middle"
+                                    fontWeight="bold"
+                                    fontSize={12}
+                                >
+                                    {value}
+                                </text>
+                            )}
+                        />
+                    </Bar>
+                </BarChart>
+            </ResponsiveContainer>
         </CardWrapper>
     );
 };

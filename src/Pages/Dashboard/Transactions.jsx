@@ -85,7 +85,7 @@ const Transactions = () => {
 
     return (
         <CardWrapper>
-            <div className='flex justify-between items-center bg-red-300'>
+            <div className='flex justify-between items-center'>
                 <div>
                     <Title title="Transactions" />
                 </div>
@@ -101,11 +101,11 @@ const Transactions = () => {
 
             <div className="mt-4">
                 {/* Render tabs for subcategories with horizontal scroll */}
-                <div className="flex space-x-4 overflow-x-auto">
+                <div className="flex gap-3 overflow-x-auto snap-mandatory snap-x">
                     {subcategories.map((item, index) => (
                         <button
                             key={index}
-                            className={`whitespace-nowrap rounded ${activeTab === item.subcategory ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} transition-colors duration-300 inline-block p-3 rounded-lg`}
+                            className={` snap-center whitespace-nowrap rounded ${activeTab === item.subcategory ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} transition-colors duration-300 inline-block p-2 rounded-lg text-sm`}
                             onClick={() => handleTabClick(item.subcategory)}
                         >
                             {item.subcategory}

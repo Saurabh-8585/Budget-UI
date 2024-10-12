@@ -1,73 +1,74 @@
 import React from 'react';
-import { Pie } from '@ant-design/plots';
+import { PieChart, Pie, Cell, Tooltip, Legend, Label } from 'recharts';
 import { CardWrapper, Title } from '../../../Components';
-
 
 const MonthlyPieChart = () => {
     const data = [
         {
-            type: "Essentials",
+            name: "Essentials",
             value: 34980,
         },
         {
-            type: "Non-Essentials",
+            name: "Non-Essentials",
             value: 34980,
         },
         {
-            type: "Miscellaneous", // Ensure consistent naming
+            name: "Miscellaneous",
             value: 34980,
         },
     ];
 
     const totalValue = data.reduce((acc, cur) => acc + cur.value, 0);
 
-    const angleField = 'value';
-    const colorField = 'type';
-    const paddingRight = 80;
-    const innerRadius = 0.499;
-    const label = {
-        text: 'value',
-        style: {
-            fontWeight: 'bold',
-        },
-        formatter: (value) => `${((value / totalValue) * 100).toFixed(0)}%`,
+    const COLORS = {
+        "Essentials": "#27AE60",
+        "Non-Essentials": "#F2C94C",
+        "Miscellaneous": "#BFC5D4",
     };
-    const legend = {
-        color: {
-            title: true,
-            value: true,
-            position: 'right',
-            formatter: (item) => `${item.type}: ${item.value}`,
-            itemSpacing: 5,
-        },
-    };
+    const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.2;
+        const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+        const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
 
-    // Color mapping
-    const colorMapping = {
-        "Essentials": "#D91616",
-        "Non-Essentials": "#F2D229",
-        "Miscellaneous": "#1C93EA",
+        return (
+            <text
+                x={x}
+                y={y}
+                fill="black"
+                textAnchor={x > cx ? 'start' : 'end'}
+                dominantBaseline="central"
+                fontSize={10}
+            >
+                {`${(percent * 100).toFixed(1)}%`}
+            </text>
+        );
     };
 
     return (
-        <CardWrapper>
+        <CardWrapper className="flex justify-between">
             <Title title="This Month" />
-            <Pie
-                data={data}
-                angleField={angleField}
-                colorField={colorField}
-                paddingRight={paddingRight}
-                innerRadius={innerRadius}
-                label={label}
-                legend={legend}
-                // Temporarily hardcoding color for testing
-                color={() => {
-                    console.log("Color function called"); // Check if this logs
-                    return "#D91616"; // Hardcoded color for testing
-                }}
-            />
+            <div className=''>
+                <PieChart width={500} height={200}>
+                    <Pie
+                        data={data}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        innerRadius={40}
+                        label={renderCustomLabel}
+                        labelLine={false}
+                    >
+                        {data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
+                        ))}
+                    </Pie>
+                    <Legend verticalAlign="right" layout="vertical" align="right" />
+                </PieChart>
+            </div>
         </CardWrapper>
     );
-}
+};
 
 export default MonthlyPieChart;

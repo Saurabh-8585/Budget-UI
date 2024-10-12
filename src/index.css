@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+
+}
+
+body {
+    min-height: 100vh;
+    background-color: #fff;
+    overflow-x: hidden;
+
+}
+
+
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #FB923C;
+    border-radius: 4px;
+}
+
+/* For Firefox */
+::-moz-scrollbar {
+    width: 8px;
+}
+
+::-moz-scrollbar-thumb {
+    background-color: #FB923C;
+    border-radius: 4px;
+}
