@@ -1,0 +1,1 @@
+export const GraphThemeColors = ["#27AE60", "#F2C94C","#BFC5D4"]
