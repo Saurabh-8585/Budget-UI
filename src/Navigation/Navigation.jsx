@@ -3,6 +3,7 @@ import Dashboard from '../Pages/Dashboard/Dashboard';
 import SignInPage from '../Pages/Auth/SignIn';
 import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
 import Header from '../Layout/Header';
+import CategoryContextProvider from '../Context/CategoryContext';
 
 
 function Navigation() {
@@ -14,26 +15,28 @@ function Navigation() {
                 signInFallbackRedirectUrl="/dashboard"
                 signUpFallbackRedirectUrl="/dashboard"
             >
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<SignInPage />} />
-                        <Route
-                            path="/dashboard"
-                            element={
-                                <>
-                                    <SignedIn>
-                                        <Header />
-                                        <Dashboard />
-                                    </SignedIn>
+                <CategoryContextProvider>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<SignInPage />} />
+                            <Route
+                                path="/dashboard"
+                                element={
+                                    <>
+                                        <SignedIn>
+                                            <Header />
+                                            <Dashboard />
+                                        </SignedIn>
 
-                                    <SignedOut>
-                                        <RedirectToSignIn />
-                                    </SignedOut>
-                                </>
-                            }
-                        />
-                    </Routes>
-                </BrowserRouter>
+                                        <SignedOut>
+                                            <RedirectToSignIn />
+                                        </SignedOut>
+                                    </>
+                                }
+                            />
+                        </Routes>
+                    </BrowserRouter>
+                </CategoryContextProvider>
             </ClerkProvider>
         </>
     );

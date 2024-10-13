@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "category": "Essential Expenses",
+        "subcategories": [
+            {
+                "id": 1,
+                "name": "Housing"
+            },
+            {
+                "id": 2,
+                "name": "Transportation"
+            },
+            {
+                "id": 3,
+                "name": "Food"
+            },
+            {
+                "id": 4,
+                "name": "Utilities and Services"
+            },
+            {
+                "id": 5,
+                "name": "Healthcare"
+            },
+            {
+                "id": 6,
+                "name": "Insurance"
+            },
+            {
+                "id": 7,
+                "name": "Debt Repayments"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "category": "Non-Essential Expenses",
+        "subcategories": [
+            {
+                "id": 1,
+                "name": "Entertainment and Leisure"
+            },
+            {
+                "id": 2,
+                "name": "Personal Care"
+            },
+            {
+                "id": 3,
+                "name": "Clothing and Accessories"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "category": "Savings and Investments",
+        "subcategories": [
+            {
+                "id": 1,
+                "name": "Savings"
+            },
+            {
+                "id": 2,
+                "name": "Investments"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "category": "Miscellaneous",
+        "subcategories": [
+            {
+                "id": 1,
+                "name": "Education and Self-Improvement"
+            },
+            {
+                "id": 2,
+                "name": "Gifts and Donations"
+            },
+            {
+                "id": 3,
+                "name": "Miscellaneous"
+            }
+        ]
+    }
+]
