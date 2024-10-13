@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { ApiUrls } from "../Constants/ApiUrl";
 
 const CategoryContext = createContext();
 
@@ -9,22 +10,21 @@ const CategoryContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const fetchCategories = async () => {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
         try {
-            const response = await fetch("/data.json");
+            const response = await fetch(ApiUrls.GET_ALL_CATEGORIES_URL);
             const data = await response.json();
+            console.log(data)
             if (data?.length > 0) {
                 const formattedData = data?.map(options => ({
                     ...options,
                     label: options.category,
-                    value: options.id,
+                    value: options._id,
                     subcategories: options.subcategories.map(sub => ({
                         ...sub,
                         label: sub.name,
-                        value: sub.id,
+                        value: sub._id,
                     }))
                 }))
-                console.log({ formattedData })
                 setCategories(formattedData)
             }
         } catch (error) {

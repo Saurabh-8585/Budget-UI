@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
+import { useRefreshContext } from '../Context/RefreshContext';
+import { ApiUrls } from '../Constants/ApiUrl';
 
-const useHandleTransaction = ({ categories }) => {
+const useHandleTransaction = ({ categories, userId }) => {
     const [selectedOption, setSelectedOption] = useState('All');
     const [activeTab, setActiveTab] = useState('All');
+    const { refresh } = useRefreshContext();
     const [categoryId, setCategoryId] = useState(0);
     const [subCategoryId, setSubCategoryId] = useState(0);
-    console.log({ categoryId, subCategoryId })
+    const [transactions, setTransactions] = useState([])
+
     const handleCategoryChange = (event) => {
         const selectedCategory = event.target.value;
         setSelectedOption(selectedCategory);
@@ -14,9 +18,9 @@ const useHandleTransaction = ({ categories }) => {
         if (selectedCategory === 'All') {
             setCategoryId(0);
         } else {
-            const category = categories.find(cat => cat.value === Number(selectedCategory));
+            const category = categories.find(cat => cat.value === selectedCategory);
             if (category) {
-                setCategoryId(category.id);
+                setCategoryId(category.value);
             }
         }
         setSubCategoryId(0);
@@ -28,16 +32,16 @@ const useHandleTransaction = ({ categories }) => {
         if (subcategoryValue === 'All') {
             setSubCategoryId(0);
         } else {
-            const selectedCategory = categories.find(category => category.value === Number(selectedOption));
+            const selectedCategory = categories.find(category => category.value === selectedOption);
             if (selectedCategory) {
                 const subcategoryObj = selectedCategory?.subcategories.find(sub => sub.value === subcategoryValue);
                 if (subcategoryObj) {
-                    setSubCategoryId(subcategoryObj.id);
+                    setSubCategoryId(subcategoryObj.value);
                 }
             } else if (selectedOption === 'All') {
                 const subcategoryObj = categories.flatMap(category => category.subcategories).find(sub => sub.value === subcategoryValue);
                 if (subcategoryObj) {
-                    setSubCategoryId(subcategoryObj.id);
+                    setSubCategoryId(subcategoryObj.value);
                 }
             }
         }
@@ -52,7 +56,7 @@ const useHandleTransaction = ({ categories }) => {
 
     const filteredData = selectedOption === 'All'
         ? combinedData
-        : combinedData.filter(item => item.category === Number(selectedOption));
+        : combinedData.filter(item => item.category === selectedOption);
 
     const subcategories = [{ subcategory: "All", value: "All" }, ...filteredData.map(item => ({
         subcategory: item.subcategory,
@@ -73,12 +77,27 @@ const useHandleTransaction = ({ categories }) => {
         }))
     ];
     const getExpensesByCategoryAndSubCategory = async () => {
+        const params = {
+            categoryId,
+            subCategoryId
+        }
+        const queryString = new URLSearchParams(params).toString();
         try {
-            const res = await fetch()
+            const res = await fetch(`${ApiUrls.GET_EXPENSES_BY_CATEGORY_AND_SUBCATEGORY_URL}?${queryString}`, {
+                headers: {
+                    'Authorization': userId
+                },
+            })
+            const data = await res.json()
+            setTransactions(data)
         } catch (error) {
-
+            console.log("Error getting transitions", error)
         }
     }
+
+    useEffect(() => {
+        getExpensesByCategoryAndSubCategory()
+    }, [categoryId, subCategoryId, refresh])
     return {
         categoryOptions,
         selectedOption,
@@ -86,7 +105,7 @@ const useHandleTransaction = ({ categories }) => {
         subcategories,
         activeTab,
         handleTabClick,
-        filteredData
+        transactions,
     }
 }
 

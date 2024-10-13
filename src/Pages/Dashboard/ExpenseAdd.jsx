@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { Input, Modal, Select } from '../../Components';
 import { useCategoryContext } from '../../Context/CategoryContext';
+import { useRefreshContext } from '../../Context/RefreshContext';
+import { ApiUrls } from '../../Constants/ApiUrl';
 
-const ExpenseAdd = () => {
+const ExpenseAdd = ({ userId }) => {
     const [isOpen, setIsOpen] = useState(false);
     const { categories, loading } = useCategoryContext();
+    const { triggerRefresh } = useRefreshContext();
+
     const [expenseDetails, setExpenseDetails] = useState({
         name: "",
         amount: "",
@@ -14,39 +18,63 @@ const ExpenseAdd = () => {
         categoryOptions: [],
         subCategoryOptions: []
     });
-    console.log(expenseDetails)
     const setSelected = (key, value) => {
         setExpenseDetails((prev) => ({
             ...prev,
             [key]: value
         }));
     };
-
     useEffect(() => {
         if (categories.length > 0) {
             const initialCategory = categories[0];
             setExpenseDetails((prev) => ({
                 ...prev,
                 categoryOptions: categories,
-                categoryId: initialCategory.id.toString(),
+                categoryId: initialCategory.value,
                 subCategoryOptions: initialCategory.subcategories,
-                subCategoryId: initialCategory.subcategories.length > 0 ? initialCategory.subcategories[0].id.toString() : ""
+                subCategoryId: initialCategory.subcategories.length > 0 ? initialCategory.subcategories[0].value : ""
             }));
         }
     }, [categories]);
 
     const handleCategoryChange = (value) => {
-        const selectedCategory = categories.find(category => category.id.toString() === value);
+        const selectedCategory = categories.find(category => category.value === value);
         const updatedSubCategoryOptions = selectedCategory ? selectedCategory.subcategories : [];
-
         setExpenseDetails((prev) => ({
             ...prev,
             categoryId: value,
             subCategoryOptions: updatedSubCategoryOptions,
-            subCategoryId: updatedSubCategoryOptions.length > 0 ? updatedSubCategoryOptions[0].id.toString() : ""
+            subCategoryId: updatedSubCategoryOptions.length > 0 ? updatedSubCategoryOptions[0].value : ""
         }));
     };
+    const handleSubmit = async (e) => {
+        e.preventDefault(); 
 
+        const expenseData = {
+            expenseName: expenseDetails.name,
+            amount: parseFloat(expenseDetails.amount),
+            categoryId: expenseDetails.categoryId,
+            subCategoryId: expenseDetails.subCategoryId,
+        };
+        try {
+            const response = await fetch(ApiUrls.ADD_EXPENSE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': userId
+                },
+                body: JSON.stringify(expenseData),
+            });
+
+            if (response.ok) {
+                triggerRefresh();
+                setIsOpen(false);
+            }
+            setIsOpen(false);
+        } catch (error) {
+            console.log(error)
+        }
+    };
     return (
         <div className='px-5'>
             <button
@@ -63,11 +91,12 @@ const ExpenseAdd = () => {
                 title="New Expense"
                 footer={null}
             >
-                <form className="">
+                <form className="" onSubmit={handleSubmit}>
                     <Input
                         label="What did you spend on?"
                         id="expense-name"
                         value={expenseDetails.name}
+                        required
                         onChange={(e) => setSelected("name", e.target.value)}
                     />
 
@@ -79,6 +108,7 @@ const ExpenseAdd = () => {
                         onChange={(e) => setSelected("amount", e.target.value)}
                         placeholder="Enter amount"
                         min={0}
+                        required
                     />
 
                     <Select
@@ -88,6 +118,7 @@ const ExpenseAdd = () => {
                         onChange={(e) => handleCategoryChange(e.target.value)}
                         label="Category"
                         disabled={loading || expenseDetails.categoryOptions.length === 0}
+                        required
 
                     />
 
@@ -97,6 +128,7 @@ const ExpenseAdd = () => {
                         selectedValue={expenseDetails.subCategoryId}
                         onChange={(e) => setSelected("subCategoryId", e.target.value)}
                         label="Sub-category"
+                        required
                         disabled={loading || expenseDetails.subCategoryOptions.length === 0}
                     />
 

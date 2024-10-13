@@ -1,72 +1,47 @@
 import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend, Label } from 'recharts';
 import { CardWrapper, Title } from '../../../Components';
+import { ApiUrls } from '../../../Constants/ApiUrl';
+import { useFetchData } from '../../../Hooks';
+import { Pie } from '@ant-design/plots';
 
-const MonthlyPieChart = () => {
-    const data = [
-        {
-            name: "Essentials",
-            value: 34980,
+const MonthlyPieChart = ({ userId, refresh }) => {
+    const options = {
+        headers: {
+            Authorization: userId
+        }
+    }
+    const { data, loading } = useFetchData(ApiUrls.GET_CURRENT_MONTH_EXPENSE, options, refresh);
+    const config = {
+        data: data || [],
+        angleField: 'totalAmount',
+        colorField: 'category',
+        paddingRight: 80,
+        innerRadius: 0.6,
+        label: {
+            text: 'totalAmount',
+            style: {
+                fontWeight: 'bold',
+            },
         },
-        {
-            name: "Non-Essentials",
-            value: 34980,
+        legend: {
+            color: {
+                title: false,
+                position: 'right',
+                rowPadding: 5,
+            },
         },
-        {
-            name: "Miscellaneous",
-            value: 34980,
-        },
-    ];
-
-    const totalValue = data.reduce((acc, cur) => acc + cur.value, 0);
-
+    };
     const COLORS = {
         "Essentials": "#27AE60",
         "Non-Essentials": "#F2C94C",
         "Miscellaneous": "#BFC5D4",
     };
-    const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-        const radius = innerRadius + (outerRadius - innerRadius) * 0.2;
-        const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-        const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
 
-        return (
-            <text
-                x={x}
-                y={y}
-                fill="black"
-                textAnchor={x > cx ? 'start' : 'end'}
-                dominantBaseline="central"
-                fontSize={10}
-            >
-                {`${(percent * 100).toFixed(1)}%`}
-            </text>
-        );
-    };
 
     return (
         <CardWrapper className="flex justify-between">
             <Title title="This Month" />
-            <div className=''>
-                <PieChart width={500} height={200}>
-                    <Pie
-                        data={data}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        innerRadius={40}
-                        label={renderCustomLabel}
-                        labelLine={false}
-                    >
-                        {data.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
-                        ))}
-                    </Pie>
-                    <Legend verticalAlign="right" layout="vertical" align="right" />
-                </PieChart>
-            </div>
+            <Pie {...config} />
         </CardWrapper>
     );
 };
