@@ -8,11 +8,15 @@ const GET_EXPENSES_BY_CATEGORY_AND_SUBCATEGORY_URL = `${BASE_URL}/api/expense/ge
 const ADD_EXPENSE_URL = `${BASE_URL}/api/expense/add_expense`;
 const GET_LAST_WEEk_EXPENSE = `${BASE_URL}/api/expense/get_last_week_expense`
 const GET_CURRENT_MONTH_EXPENSE = `${BASE_URL}/api/expense/get_current_month_expense`
+const GENERATE_MOCK_DATA = `${BASE_URL}/api/expense/generate_mock_data`
+
+
 
 export const ApiUrls = {
     GET_ALL_CATEGORIES_URL,
     GET_EXPENSES_BY_CATEGORY_AND_SUBCATEGORY_URL,
     ADD_EXPENSE_URL,
     GET_CURRENT_MONTH_EXPENSE,
-    GET_LAST_WEEk_EXPENSE
+    GET_LAST_WEEk_EXPENSE,
+    GENERATE_MOCK_DATA
 }

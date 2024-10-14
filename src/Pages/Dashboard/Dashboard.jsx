@@ -4,10 +4,26 @@ import LastWeekBarChart from './Graphs/LastWeekBarChart';
 import Transactions from './Transactions';
 import ExpenseAdd from './ExpenseAdd';
 import { useRefreshContext } from '../../Context/RefreshContext';
+import { useFetchData } from '../../Hooks';
+import { ApiUrls } from '../../Constants/ApiUrl';
+import { useEffect, useState } from 'react';
 
 const Dashboard = () => {
     const { user } = useClerk();
-    const { refresh } = useRefreshContext();
+    const [modalOpen, setModalOpen] = useState(false)
+    const { refresh, triggerRefresh } = useRefreshContext();
+    const options = {
+        headers: {
+            Authorization: user.id
+        }
+    }
+    const { data } = useFetchData(ApiUrls.GENERATE_MOCK_DATA, options)
+    useEffect(() => {
+        if (data?.mockDataGenerated === true) {
+            triggerRefresh()
+        }
+    }, [data])
+    console.log({ data })
     return (
         <>
             {/* <div className='relative'> */}

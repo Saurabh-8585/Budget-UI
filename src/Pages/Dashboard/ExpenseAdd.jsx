@@ -18,6 +18,13 @@ const ExpenseAdd = ({ userId }) => {
         subCategoryOptions: []
     }
     const [expenseDetails, setExpenseDetails] = useState(initialState);
+    const resetInput = () => {
+        setExpenseDetails(prev => ({
+            ...prev,
+            name: "",
+            amount: "",
+        }))
+    }
     const setSelected = (key, value) => {
         setExpenseDetails((prev) => ({
             ...prev,
@@ -75,12 +82,12 @@ const ExpenseAdd = ({ userId }) => {
         } catch (error) {
             console.log(error)
         } finally {
-            setExpenseDetails(initialState)
+            resetInput()
         }
     };
     const handleModalClose = () => {
         setIsOpen(false)
-        setExpenseDetails(initialState)
+        resetInput()
     }
     return (
         <div className='px-5'>

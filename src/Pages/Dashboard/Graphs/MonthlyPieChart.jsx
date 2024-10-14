@@ -10,7 +10,7 @@ const MonthlyPieChart = ({ userId, refresh }) => {
             Authorization: userId
         }
     }
-    const { data, loading } = useFetchData(ApiUrls.GET_CURRENT_MONTH_EXPENSE, options, refresh);
+    const { data } = useFetchData(ApiUrls.GET_CURRENT_MONTH_EXPENSE, options, refresh);
     const config = {
         data: data || [],
         angleField: 'totalAmount',

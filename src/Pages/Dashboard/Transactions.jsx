@@ -56,7 +56,7 @@ const Transactions = ({ userId }) => {
             </div>
 
             <div className="mt-6 h-4/5 overflow-y-scroll">
-                {Object.keys(transactions).map((dateKey, index) => (
+                {Object.keys(transactions).sort((a, b) => new Date(b) - new Date(a)).map((dateKey, index) => (
                     <div key={index}>
                         <div className="text-gray-500 font-medium mb-3">
                             {formatDate(dateKey)}
