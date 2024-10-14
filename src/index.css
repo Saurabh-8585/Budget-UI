@@ -11,7 +11,7 @@
 }
 
 body {
-    min-height: 100vh;
+    /* min-height: 100vh; */
     background-color: #fff;
     overflow-x: hidden;
 
@@ -21,20 +21,19 @@ body {
 
 ::-webkit-scrollbar {
     width: 8px;
-    height: 8px;
+    height: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #FB923C;
+    background-color: #b9cbe7;
     border-radius: 4px;
 }
 
-/* For Firefox */
 ::-moz-scrollbar {
     width: 8px;
 }
 
 ::-moz-scrollbar-thumb {
-    background-color: #FB923C;
+    background-color: #3B82F6;
     border-radius: 4px;
 }

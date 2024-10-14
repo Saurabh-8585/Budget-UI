@@ -27,7 +27,7 @@ const Transactions = ({ userId }) => {
     };
 
     return (
-        <CardWrapper className="h-full">
+        <CardWrapper className="h-full p-3">
             <div className='flex justify-between items-center'>
                 <Title title="Transactions" />
                 <div>
@@ -55,7 +55,7 @@ const Transactions = ({ userId }) => {
                 </div>
             </div>
 
-            <div className="mt-6   h-4/5 overflow-y-scroll">
+            <div className="mt-6 h-4/5 overflow-y-scroll">
                 {Object.keys(transactions).map((dateKey, index) => (
                     <div key={index}>
                         <div className="text-gray-500 font-medium mb-3">

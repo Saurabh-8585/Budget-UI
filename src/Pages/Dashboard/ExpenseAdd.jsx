@@ -9,15 +9,15 @@ const ExpenseAdd = ({ userId }) => {
     const [isOpen, setIsOpen] = useState(false);
     const { categories, loading } = useCategoryContext();
     const { triggerRefresh } = useRefreshContext();
-
-    const [expenseDetails, setExpenseDetails] = useState({
+    const initialState = {
         name: "",
         amount: "",
         categoryId: "",
         subCategoryId: "",
         categoryOptions: [],
         subCategoryOptions: []
-    });
+    }
+    const [expenseDetails, setExpenseDetails] = useState(initialState);
     const setSelected = (key, value) => {
         setExpenseDetails((prev) => ({
             ...prev,
@@ -47,8 +47,9 @@ const ExpenseAdd = ({ userId }) => {
             subCategoryId: updatedSubCategoryOptions.length > 0 ? updatedSubCategoryOptions[0].value : ""
         }));
     };
+
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         const expenseData = {
             expenseName: expenseDetails.name,
@@ -73,8 +74,14 @@ const ExpenseAdd = ({ userId }) => {
             setIsOpen(false);
         } catch (error) {
             console.log(error)
+        } finally {
+            setExpenseDetails(initialState)
         }
     };
+    const handleModalClose = () => {
+        setIsOpen(false)
+        setExpenseDetails(initialState)
+    }
     return (
         <div className='px-5'>
             <button
@@ -87,7 +94,7 @@ const ExpenseAdd = ({ userId }) => {
 
             <Modal
                 open={isOpen}
-                onClose={() => setIsOpen(false)}
+                onClose={handleModalClose}
                 title="New Expense"
                 footer={null}
             >
