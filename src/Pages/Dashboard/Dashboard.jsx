@@ -17,13 +17,13 @@ const Dashboard = () => {
             Authorization: user.id
         }
     }
+    console.log(user.id)
     const { data } = useFetchData(ApiUrls.GENERATE_MOCK_DATA, options)
     useEffect(() => {
         if (data?.mockDataGenerated === true) {
             triggerRefresh()
         }
     }, [data])
-    console.log({ data })
     return (
         <>
             {/* <div className='relative'> */}
