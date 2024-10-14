@@ -27,7 +27,7 @@ const Transactions = ({ userId }) => {
     };
 
     return (
-        <CardWrapper>
+        <CardWrapper className="h-full">
             <div className='flex justify-between items-center'>
                 <Title title="Transactions" />
                 <div>

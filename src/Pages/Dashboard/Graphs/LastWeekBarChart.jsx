@@ -36,7 +36,7 @@ const LastWeekBarChart = ({ userId, refresh }) => {
     };
 
     return (
-        <CardWrapper>
+        <CardWrapper className="h-full">
             <Title title="Last Week Expenses" />
             <Column {...config} loading={loading} />
         </CardWrapper>

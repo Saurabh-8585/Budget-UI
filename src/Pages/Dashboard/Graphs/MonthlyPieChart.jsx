@@ -39,7 +39,7 @@ const MonthlyPieChart = ({ userId, refresh }) => {
 
 
     return (
-        <CardWrapper className="flex justify-between">
+        <CardWrapper className="flex justify-between h-full">
             <Title title="This Month" />
             <Pie {...config} />
         </CardWrapper>
