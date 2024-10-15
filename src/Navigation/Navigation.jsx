@@ -11,36 +11,38 @@ function Navigation() {
     const PUBLISHABLE_KEY = process.env.REACT_APP_PUBLISHABLE_KEY
     return (
         <>
-            <ClerkProvider
-                publishableKey={PUBLISHABLE_KEY}
-                signInFallbackRedirectUrl="/dashboard"
-                signUpFallbackRedirectUrl="/dashboard"
-            >
-                <CategoryContextProvider>
-                    <RefreshProvider>
-                        <BrowserRouter>
-                            <Routes>
-                                <Route path="/" element={<SignInPage />} />
-                                <Route
-                                    path="/dashboard"
-                                    element={
-                                        <>
-                                            <SignedIn>
-                                                <Header />
-                                                <Dashboard />
-                                            </SignedIn>
+            <div className='h-screen w-screen flex flex-col'>
+                <ClerkProvider
+                    publishableKey={PUBLISHABLE_KEY}
+                    signInFallbackRedirectUrl="/dashboard"
+                    signUpFallbackRedirectUrl="/dashboard"
+                >
+                    <CategoryContextProvider>
+                        <RefreshProvider>
+                            <BrowserRouter>
+                                <Routes>
+                                    <Route path="/" element={<SignInPage />} />
+                                    <Route
+                                        path="/dashboard"
+                                        element={
+                                            <>
+                                                <SignedIn>
+                                                    <Header />
+                                                    <Dashboard />
+                                                </SignedIn>
 
-                                            <SignedOut>
-                                                <RedirectToSignIn />
-                                            </SignedOut>
-                                        </>
-                                    }
-                                />
-                            </Routes>
-                        </BrowserRouter>
-                    </RefreshProvider>
-                </CategoryContextProvider>
-            </ClerkProvider>
+                                                <SignedOut>
+                                                    <RedirectToSignIn />
+                                                </SignedOut>
+                                            </>
+                                        }
+                                    />
+                                </Routes>
+                            </BrowserRouter>
+                        </RefreshProvider>
+                    </CategoryContextProvider>
+                </ClerkProvider>
+            </div>
         </>
     );
 }

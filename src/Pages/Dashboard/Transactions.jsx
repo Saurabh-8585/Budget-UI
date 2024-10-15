@@ -5,8 +5,6 @@ import { useHandleTransaction } from '../../Hooks';
 import { format, parseISO, isToday, isYesterday } from 'date-fns';
 import { AppImages } from '../../Assets';
 
-
-
 const Transactions = ({ userId }) => {
     const { categories, loading } = useCategoryContext();
     const {
@@ -27,7 +25,7 @@ const Transactions = ({ userId }) => {
     };
 
     return (
-        <CardWrapper className="h-full p-3">
+        <CardWrapper className="h-full p-3 flex flex-col">
             <div className='flex justify-between items-center'>
                 <Title title="Transactions" />
                 <div>
@@ -55,7 +53,7 @@ const Transactions = ({ userId }) => {
                 </div>
             </div>
 
-            <div className="mt-6 h-4/5 overflow-y-scroll">
+            <div className="mt-6 flex-grow overflow-y-auto h-0">
                 {Object.keys(transactions).sort((a, b) => new Date(b) - new Date(a)).map((dateKey, index) => (
                     <div key={index}>
                         <div className="text-gray-500 font-medium mb-3">

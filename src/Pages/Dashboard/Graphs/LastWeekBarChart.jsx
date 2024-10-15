@@ -1,5 +1,5 @@
-import { Column } from '@ant-design/plots';
 import React from 'react';
+import ReactApexChart from 'react-apexcharts';
 import { CardWrapper, Title } from '../../../Components';
 import { ApiUrls } from '../../../Constants/ApiUrl';
 import { useFetchData } from '../../../Hooks';
@@ -25,37 +25,79 @@ const LastWeekBarChart = ({ userId, refresh }) => {
         "Savings and Investments": "#FF8042"
     };
 
-    const formattedData = (data || [])
-        .map((item) => ({
-            ...item,
-            date: formatDate(item.date),
-        }))
+    const combinedData = (data || []).reduce((acc, item) => {
+        const formattedDate = formatDate(item.date);
+        const key = `${formattedDate}-${item.category}`;
+
+        if (acc[key]) {
+            acc[key].amount += item.amount;
+        } else {
+            acc[key] = { ...item, date: formattedDate };
+        }
+
+        return acc;
+    }, {});
+
+    const formattedData = Object.values(combinedData)
         .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    const config = {
-        data: formattedData,
-        xField: 'date',
-        yField: 'amount',
-        colorField: 'category',
-        stackField: 'category',
-        stack: true,
-        color: ({ category }) => GraphThemeColors[category],
-        label: {
-            position: 'top',
-            style: {
-                fill: '#fff',
-                fontSize: 12,
-                fontWeight: 'bold'
-            },
-            content: (item) => `${item.amount.toFixed(2)}`,
+    const categories = [...new Set(formattedData.map(item => item.date))];
+    const essentialExpenses = categories.map(date =>
+        formattedData.find(item => item.date === date && item.category === "Essential Expenses")?.amount || 0);
+    const nonEssentialExpenses = categories.map(date =>
+        formattedData.find(item => item.date === date && item.category === "Non-Essential Expenses")?.amount || 0);
+    const savingsInvestments = categories.map(date =>
+        formattedData.find(item => item.date === date && item.category === "Savings and Investments")?.amount || 0);
+
+    const series = [
+        {
+            name: "Essential Expenses",
+            data: essentialExpenses
         },
-        interactions: [{ type: 'element-highlight-by-x' }, { type: 'element-active' }],
+        {
+            name: "Non-Essential Expenses",
+            data: nonEssentialExpenses
+        },
+        {
+            name: "Savings and Investments",
+            data: savingsInvestments
+        }
+    ];
+
+    const chartOptions = {
+        chart: {
+            type: 'bar',
+            stacked: true,
+            toolbar: { show: false },
+            animations: { enabled: false }
+        },
+        colors: [GraphThemeColors["Essential Expenses"], GraphThemeColors["Non-Essential Expenses"], GraphThemeColors["Savings and Investments"]],
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+            }
+        },
+        xaxis: {
+            categories: categories
+        },
+        legend: {
+            position: 'top'
+        },
+        fill: {
+            opacity: 1
+        },
+        dataLabels: {
+            enabled: true,
+        }
     };
 
     return (
         <CardWrapper className="h-full">
             <Title title="Last Week Expenses" />
-            <Column {...config} loading={loading} />
+            {!loading && (
+                <ReactApexChart options={chartOptions} series={series} type="bar" height={350} />
+            )}
         </CardWrapper>
     );
 };

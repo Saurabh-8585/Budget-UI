@@ -76,13 +76,13 @@ const ExpenseAdd = ({ userId }) => {
 
             if (response.ok) {
                 triggerRefresh();
-                setIsOpen(false);
+
             }
-            setIsOpen(false);
         } catch (error) {
             console.log(error)
         } finally {
             resetInput()
+            setIsOpen(false);
         }
     };
     const handleModalClose = () => {
